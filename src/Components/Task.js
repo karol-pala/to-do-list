@@ -1,4 +1,5 @@
 import React from "react"
+import PropTypes from "prop-types"
 
 function Task(props){
     return(
@@ -10,6 +11,16 @@ function Task(props){
             <button onClick={() => props.onDeleteTask(props.taskKey)}>usuń</button>
         </li>
     )
+}
+
+Task.propTypes = {
+    taskName: PropTypes.string.isRequired,
+    taskDesc: PropTypes.string.isRequired,
+    taskDate: PropTypes.string.isRequired,
+    i: PropTypes.number.isRequired,
+    taskKey: PropTypes.number.isRequired,
+    onMarkAsDone: PropTypes.func.isRequired,
+    onDeleteTask: PropTypes.func.isRequired
 }
 
 export default Task

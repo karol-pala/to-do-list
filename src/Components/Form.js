@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 function Form(props){
     return(
@@ -22,6 +23,13 @@ function Form(props){
             <button className="form__add">dodaj</button>
         </form>
     )
+}
+
+Form.propTypes = {
+    onChangeTaskName: PropTypes.func.isRequired,
+    onChangeTaskDate: PropTypes.func.isRequired,
+    onChangeTaskDesc: PropTypes.func.isRequired,
+    onAddTask: PropTypes.func.isRequired
 }
 
 export default Form

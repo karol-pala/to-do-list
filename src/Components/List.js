@@ -1,5 +1,6 @@
 import React from "react";
 import Task from "./Task";
+import PropTypes from "prop-types";
 
 function List(props){
     return(
@@ -15,6 +16,15 @@ function List(props){
         </ul>
         
     )
+}
+
+List.propTypes = {
+    list: PropTypes.array,
+    taskName: PropTypes.string,
+    taskDesc: PropTypes.string,
+    taskDate: PropTypes.string,
+    onDeleteTask: PropTypes.func,
+    onMarkAsDone: PropTypes.func
 }
 
 export default List
