@@ -4,7 +4,7 @@ import Task from "./Task";
 function List(props){
     console.log(props.state)
     return(
-        <div>
+        <ul className="list">
             {props.state.list && props.state.list.map((item, i) => <Task  taskName={item.taskName} 
                                                                             taskDesc={item.taskDesc}
                                                                             taskDate={item.taskDate}
@@ -13,7 +13,7 @@ function List(props){
                                                                             onMarkAsDone={props.onMarkAsDone}
                                                                             i={i}
                                                                             key={i}/>)}
-        </div>
+        </ul>
         
     )
 }
