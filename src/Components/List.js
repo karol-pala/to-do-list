@@ -2,7 +2,6 @@ import React from "react";
 import Task from "./Task";
 
 function List(props){
-    console.log(props.state)
     return(
         <ul className="list">
             {props.state.list && props.state.list.map((item, i) => <Task  taskName={item.taskName} 

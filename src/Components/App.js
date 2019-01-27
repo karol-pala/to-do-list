@@ -16,31 +16,51 @@ const INITIAL_LIST = [
 class App extends Component{
     constructor(){
         super();
+        
         const list = localStorage.getItem("list");
         
+        console.log("Lista: ");
+        console.log(list);
         if(list){
+            let parsedList = JSON.parse(list);
             this.state = {
-                list: list,
-                taskName: "",
-                taskDesc: "",
-                taskDate: "",
-                taskKey: ""
+                list: parsedList,
+                taskName: null,
+                taskDesc: null,
+                taskDate: null,
+                taskKey: null
             } 
         } else {
+            if(localStorage.getItem("list")){
+                localStorage.removeItem("list");
+            }
             this.state = {
-                list: INITIAL_LIST,
-                taskName: "",
-                taskDesc: "",
-                taskDate: "",
-                taskKey: ""
+                list: [],
+                taskName: null,
+                taskDesc: null,
+                taskDate: null,
+                taskKey: null
             };
         }
+        console.log(this.state)
         this.onChangeTaskName = this.onChangeTaskName.bind(this);
         this.onChangeTaskDesc = this.onChangeTaskDesc.bind(this);
         this.onChangeTaskDate = this.onChangeTaskDate.bind(this);
         this.onAddTask = this.onAddTask.bind(this);
         this.onDeleteTask = this.onDeleteTask.bind(this);
         this.onMarkAsDone = this.onMarkAsDone.bind(this);
+    }
+
+    componentDidUpdate(){
+        let list = [];
+        list = this.state.list;
+        list = JSON.stringify(list);
+        console.log("Lista przed localStorage");
+        console.log(list);
+      
+            localStorage.setItem("list", list); 
+       
+        
     }
 
     onChangeTaskName = (e) => {
@@ -66,11 +86,12 @@ class App extends Component{
 
     onAddTask = (e) => {
         e.preventDefault();
+        console.log("state: ")
         console.log(this.state);
         this.setState(state => {
             let task = null;
             let list;
-            if(this.state.taskName !== ""){
+            if(this.state.taskName !== null){
                 task = {
                     taskName: this.state.taskName,
                     taskDesc: this.state.taskDesc,
@@ -86,15 +107,17 @@ class App extends Component{
                 list = state.list;
             }
             
-            //localStorage.setItem("list", list);
+
             return {
-                list,
-                taskName: "",
-                taskDesc: "",
-                taskDate: "",
-                taskKey: "",
+                list: list,
+                taskName: null,
+                taskDesc: null,
+                taskDate: null,
+                taskKey: null,
             }
         })
+        console.log("state: ")
+        console.log(this.state);
     }
 
     onDeleteTask(key){
