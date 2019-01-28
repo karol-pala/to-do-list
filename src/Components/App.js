@@ -33,7 +33,8 @@ class App extends Component{
                 taskName: null,
                 taskDesc: null,
                 taskDate: null,
-                taskKey: null
+                taskKey: null,
+                
             } 
         } else {
             if(localStorage.getItem("list")){
@@ -44,7 +45,8 @@ class App extends Component{
                 taskName: null,
                 taskDesc: null,
                 taskDate: null,
-                taskKey: null
+                taskKey: null,
+                
             };
         }
         console.log(this.state)
@@ -69,10 +71,7 @@ class App extends Component{
         list = JSON.stringify(list);
         console.log("Lista przed localStorage");
         console.log(list);
-      
-            localStorage.setItem("list", list); 
-       
-        
+        localStorage.setItem("list", list);
     }
 
     //getting values from form inputs
@@ -101,7 +100,7 @@ class App extends Component{
     onAddTask = (e) => {
         //stop execute event
         e.preventDefault();
-        console.log("state: ")
+        console.log("state: ");
         console.log(this.state);
         this.setState(state => {
             let task = null;
@@ -126,12 +125,14 @@ class App extends Component{
             }
             
             //returning list, and empty variables to state
+            //changing formSubmited to true
             return {
                 list: list,
                 taskName: null,
                 taskDesc: null,
                 taskDate: null,
                 taskKey: null,
+                formSubmited: true
             }
         })
         console.log("state: ")
@@ -161,10 +162,14 @@ class App extends Component{
             const list = state.list.map((item, j) => {
                 if(key === j){
                     if(item.taskDone === false){
-                        return item = {
+                        item = {
                             ...item,
                             taskDone: true
                         }
+                        //changing background of li tag
+                        let li = document.getElementById(item.taskKey);
+                        li.style.background = "red"
+                        return item;
                     } else {
                         return item
                     }

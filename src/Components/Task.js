@@ -3,7 +3,7 @@ import PropTypes from "prop-types"
 
 function Task(props){
     return(
-        <li className="task">
+        <li className="task" id={props.taskKey}>
             <h1 className="task__title">{props.taskName}</h1>
             <h2 className="task__desc">{props.taskDesc}</h2>
             <h2 className="task__date">{props.taskDate}</h2>
