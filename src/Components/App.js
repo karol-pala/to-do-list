@@ -1,55 +1,29 @@
 import React, {Component} from "react";
 import Form from "./Form";
 import List from "./List";
-
-const INITIAL_LIST = [
-    {
-        taskName: "tytuł",
-        taskDesc: "opis",
-        taskDate: "2019-01-01",
-        taskKey: Date.now(),
-        taskDone: false
-    }
-]
+import { connect } from "react-redux";
+import {getList, makeList, getTaskName, getTaskDescription, getTaskDate} from "../Actions/index"
 
 
+//NIE DZIALA !!!!
 class App extends Component{
     constructor(){
         super();
-        //getting list from localStorage
         const list = localStorage.getItem("list");
-        
-        console.log("Lista: ");
-        console.log(list);
-        //if list in localStorage exist, parse it and assign to this.state.list
         if(list){
-            //parsing list; in localStorage data is saved as string, we need to parse it back to array
+            //parsing list; in localStorage data is saved as string
             let parsedList = JSON.parse(list);
             //list - stores list of tasks
             //taskName, taskDesc, taskDate - temporary variables, used to make a task
             //taskKey - also used to adding, deleting, marking
-            this.state = {
-                list: parsedList,
-                taskName: null,
-                taskDesc: null,
-                taskDate: null,
-                taskKey: null,
-                
-            } 
+            this.props.getList(parsedList);
         } else {
             if(localStorage.getItem("list")){
                 localStorage.removeItem("list");
             }
-            this.state = {
-                list: [],
-                taskName: null,
-                taskDesc: null,
-                taskDate: null,
-                taskKey: null,
-                
-            };
+            this.props.makeList();
         }
-        console.log(this.state)
+
         //binding function to constructor
         //functions doesn`t work properly if they`re  not binded, because at render function starts after constructor
         //and it`s trying to use functions which are not loaded yet and that makes errors
@@ -61,16 +35,18 @@ class App extends Component{
         this.onMarkAsDone = this.onMarkAsDone.bind(this);
     }
 
+    componentDidMount(){
+        const list = localStorage.getItem("list");
+    }
+
     //lifecycle method
     //setting "list" to LocalStorage
     componentDidUpdate(){
         let list = [];
-        list = this.state.list;
+        list = this.props.list;
         //converting array to string to safe it in local storage
         //in local storage we can save only strings
         list = JSON.stringify(list);
-        console.log("Lista przed localStorage");
-        console.log(list);
         localStorage.setItem("list", list);
     }
 
@@ -78,30 +54,25 @@ class App extends Component{
 
     onChangeTaskName = (e) => {
         e.preventDefault();
-        this.setState({
-            taskName: e.target.value
-        })
+        this.props.getTaskName(e.target.value)
     }
 
     onChangeTaskDesc = (e) => {
         e.preventDefault();
-        this.setState({
-            taskDesc: e.target.value
-        })
+        this.props.getTaskDescription(e.target.value)
     }
 
     onChangeTaskDate = (e) => {
         e.preventDefault();
-        this.setState({
-            taskDate: e.target.value
-        })
+        this.props.getTaskDate(e.target.value)
     }
     //Adding tasks
     onAddTask = (e) => {
         //stop execute event
         e.preventDefault();
-        console.log("state: ");
-        console.log(this.state);
+        let task;
+        let list = this.props.list;
+        
         this.setState(state => {
             let task = null;
             let list;
@@ -135,14 +106,11 @@ class App extends Component{
                 formSubmited: true
             }
         })
-        console.log("state: ")
-        console.log(this.state);
     }
 
     //deleting tasks, state.list is filtered, if "key" doesn`t equal "taskKey", "item" is deleted from array
     // function returns array without deleted item
     onDeleteTask(key){
-        console.log(key)
         this.setState(state => {
             const list = state.list.filter(item => item.taskKey !== key);
             return {
@@ -175,7 +143,6 @@ class App extends Component{
                     }
                     
                 } else {
-                    console.log(key + " " + item.taskKey);
                     return item
                 }
             })
@@ -202,4 +169,19 @@ class App extends Component{
     }
 }
 
-export default App
+const mapStateToProps = (state) => {
+    return {
+        list: state.list,
+        task: state.task
+    }
+}
+
+const mapDispatchToProps = {
+    getList,
+    makeList,
+    getTaskName,
+    getTaskDescription,
+    getTaskDate
+};
+
+export const AppContainer = connect(mapStateToProps, mapDispatchToProps)(App);
