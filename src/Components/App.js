@@ -2,20 +2,15 @@ import React, {Component} from "react";
 import Form from "./Form";
 import List from "./List";
 import { connect } from "react-redux";
-import {getList, makeList, getTaskName, getTaskDescription, getTaskDate} from "../Actions/index"
+import {getList, makeList, getTaskName, getTaskDescription, getTaskDate} from "../actions"
 
 
-//NIE DZIALA !!!!
 class App extends Component{
-    constructor(){
-        super();
+
+    componentDidMount(){
         const list = localStorage.getItem("list");
         if(list){
-            //parsing list; in localStorage data is saved as string
             let parsedList = JSON.parse(list);
-            //list - stores list of tasks
-            //taskName, taskDesc, taskDate - temporary variables, used to make a task
-            //taskKey - also used to adding, deleting, marking
             this.props.getList(parsedList);
         } else {
             if(localStorage.getItem("list")){
@@ -23,34 +18,14 @@ class App extends Component{
             }
             this.props.makeList();
         }
-
-        //binding function to constructor
-        //functions doesn`t work properly if they`re  not binded, because at render function starts after constructor
-        //and it`s trying to use functions which are not loaded yet and that makes errors
-        this.onChangeTaskName = this.onChangeTaskName.bind(this);
-        this.onChangeTaskDesc = this.onChangeTaskDesc.bind(this);
-        this.onChangeTaskDate = this.onChangeTaskDate.bind(this);
-        this.onAddTask = this.onAddTask.bind(this);
-        this.onDeleteTask = this.onDeleteTask.bind(this);
-        this.onMarkAsDone = this.onMarkAsDone.bind(this);
     }
 
-    componentDidMount(){
-        const list = localStorage.getItem("list");
-    }
-
-    //lifecycle method
-    //setting "list" to LocalStorage
     componentDidUpdate(){
         let list = [];
         list = this.props.list;
-        //converting array to string to safe it in local storage
-        //in local storage we can save only strings
         list = JSON.stringify(list);
         localStorage.setItem("list", list);
     }
-
-    //getting values from form inputs
 
     onChangeTaskName = (e) => {
         e.preventDefault();
@@ -66,7 +41,9 @@ class App extends Component{
         e.preventDefault();
         this.props.getTaskDate(e.target.value)
     }
-    //Adding tasks
+    
+
+    //przebudowac pod redux
     onAddTask = (e) => {
         //stop execute event
         e.preventDefault();
@@ -78,18 +55,18 @@ class App extends Component{
             let list;
             //if variable "taskName" (title of task, taken from textarea in form),
             // isn`t null, values from form are assigned to task
-            if(this.state.taskName !== null){
+            if(this.props.taskName !== null){
                 task = {
-                    taskName: this.state.taskName,
-                    taskDesc: this.state.taskDesc,
-                    taskDate: this.state.taskDate,
+                    taskName: this.props.taskName,
+                    taskDesc: this.props.taskDesc,
+                    taskDate: this.props.taskDate,
                     taskKey: Date.now(),
                     taskDone: false
                 }
             }
             //if "task" isn`t null, "task" is added to array "list",
             if(task !== null){
-                list = state.list.concat(task);
+                list = this.props.list.concat(task);
                 console.log(list);
             } else {
                 list = state.list;
@@ -158,12 +135,12 @@ class App extends Component{
             <div className="app">
                 <h1 className="title">to do list</h1>
                 <Form 
-                    state={this.state} 
+                    state={this.props} 
                     onChangeTaskDate={this.onChangeTaskDate}
                     onChangeTaskDesc={this.onChangeTaskDesc}
                     onChangeTaskName={this.onChangeTaskName}
                     onAddTask={this.onAddTask}/>
-                <List state={this.state} onDeleteTask={this.onDeleteTask} onMarkAsDone={this.onMarkAsDone}/>
+                <List state={this.props} onDeleteTask={this.onDeleteTask} onMarkAsDone={this.onMarkAsDone}/>
             </div>
         )
     }
